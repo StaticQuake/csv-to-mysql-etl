@@ -14,7 +14,7 @@ CSV File
    ↓
 Extract (pandas)
    ↓
-Transform (cleaning, schema enforcement, validation)
+Transform (schema enforcement, validation)
    ↓
 Processed CSV
    ↓
@@ -52,9 +52,10 @@ DE_Project/
 │   └── mysql_connection.py
 │
 ├── dev/
-│   └── config.py
+│   └── config.example.py
 │
 ├── main.py
+├── requirements.txt
 └── README.md
 ```
 
@@ -68,7 +69,7 @@ DE_Project/
 ---
 
 ## 🔄 Transform Step
-- Standardizes column names to snake_case
+- Standardizes column names to `snake_case`
 - Converts data types (dates, numeric fields)
 - Adds derived column: `total_sales`
 - Performs data validation checks
@@ -79,24 +80,42 @@ DE_Project/
 ## 🗄️ Database Design
 - Database: `de_project`
 - Table: `sales`
-- Primary Key: `row_id`
+- Primary Key: `row_id` (chosen because `order_id` is not unique)
 - Uses appropriate SQL data types
 
 ---
 
 ## 📤 Load Step
-- Converts NaN to NULL
-- Uses parameterized queries
-- Bulk inserts with `executemany()`
-- Uses `INSERT IGNORE` for idempotency
+- Converts NaN values to SQL NULL
+- Uses parameterized SQL queries
+- Bulk inserts using `executemany()`
+- Uses `INSERT IGNORE` to ensure idempotent loads
+
+---
+
+## ⚙️ Configuration
+
+This project uses a configuration file for paths and database credentials.
+
+### Steps:
+1. Copy the example config file:
+```bash
+cp dev/config.example.py dev/config.py
+```
+
+2. Update the following values in `config.py`:
+- `local_directory`
+- MySQL credentials (`host`, `user`, `password`, `database`)
+
+> ⚠️ `config.py` is intentionally ignored in `.gitignore` to avoid exposing credentials.
 
 ---
 
 ## ▶️ How to Run
 
-1. Create MySQL database and table
-2. Update credentials in `config.py`
-3. Run:
+1. Create the MySQL database and `sales` table
+2. Update credentials in `dev/config.py`
+3. Run the pipeline:
 ```bash
 python main.py
 ```
@@ -104,16 +123,16 @@ python main.py
 ---
 
 ## 📈 Key Learnings
-- ETL pipeline design
-- Schema enforcement
-- Data validation
-- MySQL loading strategies
-- Clean project structure
+- End-to-end ETL pipeline design
+- Schema enforcement before database load
+- Data validation and defensive programming
+- Idempotent database loading
+- Clean project structure and configuration management
 
 ---
 
 ## 🚀 Future Enhancements
-- Logging and monitoring
-- Incremental loads
-- Spark-based processing
-- Airflow orchestration
+- Add logging and error handling
+- Implement incremental loads
+- Convert pipeline to PySpark
+- Introduce Airflow for orchestration
