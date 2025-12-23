@@ -111,6 +111,12 @@ cp dev/config.example.py dev/config.py
 
 ---
 
+### Data Quality Enhancements
+- Handled missing and inconsistent values in retail dataset
+- Applied validation rules and separated rejected records
+- Enhanced transformation logic for messy real-world data
+
+
 ## ▶️ How to Run
 
 1. Create the MySQL database and `sales` table
